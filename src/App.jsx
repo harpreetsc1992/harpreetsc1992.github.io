@@ -1,13 +1,37 @@
 import { useState } from 'react'
-import { profile, skills, projects } from './data'
+import { profile, education, skills, projects, publications, manuscripts } from './data'
 import './App.css'
 
 const sections = [
   { id: 'about', label: 'About' },
+  { id: 'education', label: 'Education' },
   { id: 'skills', label: 'Skills' },
-  { id: 'projects', label: 'Projects' },
+  { id: 'research', label: 'Research' },
+  { id: 'publications', label: 'Publications' },
   { id: 'contact', label: 'Contact' },
 ]
+
+function ProjectCard({ project }) {
+  const content = (
+    <>
+      <h3>{project.name}</h3>
+      <p>{project.description}</p>
+      <ul className="tag-list">
+        {project.tags.map((tag) => (
+          <li key={tag}>{tag}</li>
+        ))}
+      </ul>
+    </>
+  )
+
+  return project.link ? (
+    <a className="project-card" href={project.link} target="_blank" rel="noreferrer">
+      {content}
+    </a>
+  ) : (
+    <div className="project-card">{content}</div>
+  )
+}
 
 function App() {
   const [navOpen, setNavOpen] = useState(false)
@@ -62,6 +86,21 @@ function App() {
           {profile.location && <p className="muted">{profile.location}</p>}
         </section>
 
+        <section id="education" className="section">
+          <h2>Education</h2>
+          <ul className="education-list">
+            {education.map((e) => (
+              <li key={e.school}>
+                <div className="education-row">
+                  <h3>{e.school}</h3>
+                  <span className="muted">{e.period}</span>
+                </div>
+                <p className="muted">{e.degree}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
         <section id="skills" className="section">
           <h2>Skills</h2>
           <ul className="skill-list">
@@ -73,27 +112,45 @@ function App() {
           </ul>
         </section>
 
-        <section id="projects" className="section">
-          <h2>Projects</h2>
+        <section id="research" className="section">
+          <h2>Research</h2>
           <div className="project-grid">
             {projects.map((project) => (
-              <a
-                key={project.name}
-                className="project-card"
-                href={project.link}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <h3>{project.name}</h3>
-                <p>{project.description}</p>
-                <ul className="tag-list">
-                  {project.tags.map((tag) => (
-                    <li key={tag}>{tag}</li>
-                  ))}
-                </ul>
-              </a>
+              <ProjectCard key={project.name} project={project} />
             ))}
           </div>
+        </section>
+
+        <section id="publications" className="section">
+          <h2>Publications</h2>
+          <ul className="publication-list">
+            {publications.map((pub) => (
+              <li key={pub.title}>
+                {pub.link ? (
+                  <a href={pub.link} target="_blank" rel="noreferrer">
+                    {pub.title}
+                  </a>
+                ) : (
+                  <span className="publication-title">{pub.title}</span>
+                )}
+                <p className="muted">{pub.authors}</p>
+                <p className="publication-venue">
+                  {pub.venue} &middot; {pub.date}
+                </p>
+              </li>
+            ))}
+          </ul>
+
+          <h3 className="subsection-title">Manuscripts in Preparation / Under Review</h3>
+          <ul className="publication-list">
+            {manuscripts.map((m) => (
+              <li key={m.title}>
+                <span className="publication-title">{m.title}</span>
+                <p className="muted">{m.authors}</p>
+                <p className="publication-venue">{m.status}</p>
+              </li>
+            ))}
+          </ul>
         </section>
 
         <section id="contact" className="section">
@@ -109,6 +166,11 @@ function App() {
             <a href={profile.linkedin} target="_blank" rel="noreferrer">
               LinkedIn
             </a>
+            {profile.scholar && (
+              <a href={profile.scholar} target="_blank" rel="noreferrer">
+                Google Scholar
+              </a>
+            )}
           </div>
         </section>
       </main>
